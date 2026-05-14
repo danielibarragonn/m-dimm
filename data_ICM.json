@@ -1,15 +1,6 @@
 {
 
   "s1": [
-        [
-      "Formación general electiva",
-      "FGE",
-      0,
-      3,
-      "BAS",
-      [],
-      "A"
-    ],
     [
       "Cálculo I",
       "CAL-I",
@@ -69,6 +60,15 @@
       "PInt",
       1,
       5,
+      "BAS",
+      [],
+      "A"
+    ],
+            [
+      "Formación general electiva",
+      "FGE",
+      0,
+      3,
       "BAS",
       [],
       "A"
@@ -329,17 +329,6 @@
       "PRO",
       [],
       "A"
-    ],
-    [
-      "Electivo Profesional Minor 2",
-      "EPM-II",
-      6,
-      5,
-      "PRO",
-      [
-        "EPM-I"
-      ],
-      "A"
     ]
   ],
   "s7": [
@@ -388,13 +377,13 @@
       "A"
     ],
     [
-      "Electivo Profesional Minor 3",
-      "EPM-III",
-      7,
+      "Electivo Profesional Minor 2",
+      "EPM-II",
+      6,
       5,
       "PRO",
       [
-        "EPM-II"
+        "EPM-I"
       ],
       "A"
     ]
@@ -448,6 +437,17 @@
       "PRO",
       [
         "COE-I"
+      ],
+      "A"
+    ],
+    [
+      "Electivo Profesional Minor 3",
+      "EPM-III",
+      7,
+      5,
+      "PRO",
+      [
+        "EPM-II"
       ],
       "A"
     ]
