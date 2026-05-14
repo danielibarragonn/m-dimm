@@ -24,6 +24,12 @@ button:hover{border-color:#93c5fd}
   color:#ffffff;
   border-color:#111827;
 }
+.year-toggle.active{
+  background:#111827;
+  color:#ffffff;
+  border-color:#111827;
+}
+
 .card{background:#ffffff;color:#111827;border:1px solid #cbd5e1;border-radius:14px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer;transition:.15s}
 .card:hover{border-color:#93c5fd;transform:translateY(-1px)}
 .card.approved{opacity:.45;text-decoration:line-through;background:#e5e7eb; color:#111827}
@@ -120,27 +126,28 @@ function buildYearButtons(data){
 
  for(let y = 1; y <= maxYear; y++){
    const b = document.createElement("button");
+   b.className = "year-toggle";
    b.textContent = `Año ${y}`;
 
    b.style.gridColumn = `${(y * 2) - 1} / span 2`;
    b.style.width = "100%";
 
-   b.onclick = () => {
-     const s1 = "s" + (y * 2 - 1);
-     const s2 = "s" + (y * 2);
+const s1 = "s" + (y * 2 - 1);
+const s2 = "s" + (y * 2);
 
-     const ramosAnio = [
-       ...(globalData.semesters[s1] || []),
-       ...(globalData.semesters[s2] || [])
-     ];
+const ramosAnio = [
+  ...(globalData.semesters[s1] || []),
+  ...(globalData.semesters[s2] || [])
+];
 
-     const completo = ramosAnio.every(r => approved.has(r[1]));
+const completoAnio = ramosAnio.length > 0 && ramosAnio.every(r => approved.has(r[1]));
 
-     if(completo){
-       ramosAnio.forEach(r => approved.delete(r[1]));
-     }else{
-       ramosAnio.forEach(r => approved.add(r[1]));
-     }
+if (completoAnio) {
+  b.classList.add("active");
+}
+
+b.onclick = () => {
+  const completo = ramosAnio.every(r => approved.has(r[1]));
 
      saveApproved();
      renderGrid(globalData);
@@ -149,6 +156,7 @@ function buildYearButtons(data){
    yb.appendChild(b);
  }
 }
+  
 function renderGrid(data){
  globalData=data; buildYearButtons(data);
  const grid=document.getElementById("grid"),wires=document.getElementById("wires"),q=document.getElementById("q"),show=document.getElementById("toggle-pr"),lock=document.getElementById("toggle-lock");
@@ -210,7 +218,7 @@ semBtn.onclick = () => {
   }}
  }
  function filter(){const term=q.value.toLowerCase().trim();document.querySelectorAll(".card").forEach(c=>{const m=c.dataset.sigla.toLowerCase().includes(term)||c.querySelector(".name").textContent.toLowerCase().includes(term);c.style.display=(!term||m)?"block":"none"});draw()}
- q.oninput=filter; show.onchange=draw; lock.onchange=refreshStates; window.onresize=draw; document.getElementById("reset").onclick=()=>{approved.clear();saveApproved();refreshStates();filter()};
+ q.oninput=filter; show.onchange=draw; lock.onchange=refreshStates; window.onresize=draw; document.getElementById("reset").onclick=(approved.clear();saveApproved();refreshStates();filter()};
  refreshStates();filter();
 }
 (async()=>{const d=await getData();buildLegend(d.colors);renderGrid(d)})();
