@@ -478,6 +478,54 @@
         "EPM-I"
       ],
       "A"
+    ], 
+    [
+      "Práctica Profesional",
+      "PRACT",
+      6,
+      0,
+      "LAB",
+      [
+        "CAL-I",
+        "FIS-I",
+        "ALG-I",
+        "IdU",
+        "INGL-I",
+        "COE-I",
+        "PInt",
+        "CAL-II",
+        "FIS-II",
+        "QUI",
+        "ALG-II",
+        "INGL-II",
+        "DFC-I",
+        "CAL-III",
+        "ECD",
+        "PRG",
+        "MAT",
+        "DFC-II",
+        "FGE",
+        "PDI",
+        "ELM",
+        "EST",
+        "TER",
+        "GEO-I",
+        "ETP",
+        "PIM",
+        "INGECO",
+        "SUST",
+        "CYT",
+        "GMS",
+        "GEO-II",
+        "GEOEST",
+        "CAM",
+        "GEOM-I",
+        "MCA",
+        "PYT",
+        "EPM-I",
+        "PEY"
+      ],
+      "A"
     ]
   ],
   "s8": [
@@ -555,7 +603,6 @@
       "A"
     ]
   ],
-  ],
   "s9": [
     [
       "Electivo profesional I",
@@ -613,14 +660,41 @@
     ]
   ],
   "s10": [
+  [
+    "CAPSTONE PROJECT",
+    "CAPS",
+    10,
+    30,
+    "PRO",
     [
-      "CAPSTONE PROJECT",
-      "CAPS",
-      10,
-      30,
-      "PRO",
-      [],
-      "A"
-    ]
+      "PRACT",
+      "CAM",
+      "GEOM-I",
+      "MCA",
+      "PYT",
+      "EPM-I",
+      "PEY",
+      "PLM",
+      "GEOM-II",
+      "MS",
+      "PMET",
+      "PROUN",
+      "EPM-II",
+      "GOPM",
+      "LSM",
+      "VM",
+      "EMP",
+      "COE-II",
+      "EPM-III",
+      "PM",
+      "EP-I",
+      "EP-II",
+      "EP-III",
+      "EP-IV",
+      "EP-V",
+      "EP-VI"
+    ],
+    "A"
   ]
+]
 }
