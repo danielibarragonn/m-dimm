@@ -1,6 +1,7 @@
 {
-  "s0": [
-    [
+
+  "s1": [
+        [
       "Formación general electiva",
       "FGE",
       0,
@@ -8,9 +9,7 @@
       "BAS",
       [],
       "A"
-    ]
-  ],
-  "s1": [
+    ],
     [
       "Cálculo I",
       "CAL-I",
