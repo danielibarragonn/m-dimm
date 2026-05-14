@@ -147,32 +147,35 @@ function buildYearButtons(data){
    b.style.gridColumn = `${(y * 2) - 1} / span 2`;
    b.style.width = "100%";
 
-const s1 = "s" + (y * 2 - 1);
-const s2 = "s" + (y * 2);
+   const s1 = "s" + (y * 2 - 1);
+   const s2 = "s" + (y * 2);
 
-const ramosAnio = [
-  ...(globalData.semesters[s1] || []),
-  ...(globalData.semesters[s2] || [])
-];
+   const ramosAnio = [
+     ...(globalData.semesters[s1] || []),
+     ...(globalData.semesters[s2] || [])
+   ];
 
-const completoAnio = ramosAnio.length > 0 && ramosAnio.every(r => approved.has(r[1]));
+   const completoAnio = ramosAnio.length > 0 && ramosAnio.every(r => approved.has(r[1]));
 
-if (completoAnio) {
-  b.classList.add("active");
-}
+   if (completoAnio) {
+     b.classList.add("active");
+   }
 
-b.onclick = () => {
-  const completo = ramosAnio.every(r => approved.has(r[1]));
+   b.onclick = () => {
+     const completo = ramosAnio.every(r => approved.has(r[1]));
 
-  if(completo){
-    ramosAnio.forEach(r => approved.delete(r[1]));
-  }else{
-    ramosAnio.forEach(r => approved.add(r[1]));
-  }
+     if(completo){
+       ramosAnio.forEach(r => approved.delete(r[1]));
+     }else{
+       ramosAnio.forEach(r => approved.add(r[1]));
+     }
 
-  saveApproved();
-  renderGrid(globalData);
-};
+     saveApproved();
+     renderGrid(globalData);
+   };
+
+   yb.appendChild(b);
+ }
 }
   
 function renderGrid(data){
