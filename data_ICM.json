@@ -97,6 +97,18 @@
       "FIS-I"
     ],
     "A"
+  ],     
+    [
+    "Química Grl.",
+    "QUI",
+    2,
+    6,
+    "BAS",
+    [
+      "CAL-I",
+      "FIS-I"
+    ],
+    "A"
   ],
     [
       "Álgebra II",
@@ -154,6 +166,16 @@
         "ALG-II"
       ],
       "A"
+    ],    [
+      "Programación",
+      "PRG",
+      3,
+      5,
+      "BAS",
+      [
+        "ALG-I", "PInt"
+      ],
+      "A"
     ],
     [
       "Materiales y estática",
@@ -191,6 +213,17 @@
   ],
   "s4": [
     [
+      "Electromagnetismo",
+      "ELM",
+      4,
+      6,
+      "BAS",
+      [
+        "CAL-III", "FIS-II","ALG-I"
+      ],
+      "A"
+    ],
+    [
       "Estadística",
       "EST",
       4,
@@ -198,6 +231,17 @@
       "BAS",
       [
         "CAL-II"
+      ],
+      "A"
+    ],
+    [
+      "Termodinámica",
+      "TER",
+      4,
+      5,
+      "BAS",
+      [
+        "QUI", "CAL-II"
       ],
       "A"
     ],
@@ -262,6 +306,17 @@
       "PRO",
       [
         "PInt"
+      ],
+      "A"
+    ],    
+    [
+      "Geomensura",
+      "GMS",
+      5,
+      5,
+      "PRO",
+      [
+        "ALG-II", "CAL-II"
       ],
       "A"
     ],
