@@ -63,15 +63,6 @@
       "BAS",
       [],
       "A"
-    ],
-    [
-      "Formación general electiva",
-      "FGE",
-      0,
-      3,
-      "BAS",
-      [],
-      "A"
     ]
   ],
   "s2": [
@@ -197,6 +188,15 @@
       [
         "DFC-I"
       ],
+      "A"
+    ],
+    [
+      "Formación general electiva",
+      "FGE",
+      0,
+      3,
+      "BAS",
+      [],
       "A"
     ],
     [
@@ -542,7 +542,19 @@
         "EPM-II"
       ],
       "A"
+    ],
+    [
+      "Proyecto Minero",
+      "PM",
+      7,
+      5,
+      "PRO",
+      [
+        "GEOM-I", "CYT"
+      ],
+      "A"
     ]
+  ],
   ],
   "s9": [
     [
