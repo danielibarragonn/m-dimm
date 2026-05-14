@@ -193,7 +193,7 @@
     [
       "Formación general electiva",
       "FGE",
-      0,
+      3,
       3,
       "BAS",
       [],
@@ -400,7 +400,7 @@
     [
   "Pr. Ev. Yacimientos",
   "PEY",
-  7,
+  6,
   5,
   "PRO",
   [
@@ -471,7 +471,7 @@
     [
       "Electivo Profesional Minor 2",
       "EPM-II",
-      6,
+      7,
       5,
       "PRO",
       [
@@ -583,7 +583,7 @@
     [
       "Electivo Profesional Minor 3",
       "EPM-III",
-      7,
+      8,
       5,
       "PRO",
       [
@@ -594,14 +594,13 @@
     [
       "Proyecto Minero",
       "PM",
-      7,
+      8,
       5,
       "PRO",
       [
         "GEOM-I", "CYT"
       ],
       "A"
-    ]
   ],
   "s9": [
     [
