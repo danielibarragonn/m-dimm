@@ -86,6 +86,18 @@
       ],
       "A"
     ],
+      [
+    "Mecánica",
+    "FIS-II",
+    2,
+    6,
+    "BAS",
+    [
+      "CAL-I",
+      "FIS-I"
+    ],
+    "A"
+  ],
     [
       "Álgebra II",
       "ALG-II",
@@ -329,7 +341,19 @@
       "PRO",
       [],
       "A"
-    ]
+    ],    
+    [
+  "Pr. Ev. Yacimientos",
+  "PEY",
+  7,
+  5,
+  "PRO",
+  [
+    "GEOEST",
+    "GEO-II"
+  ],
+  "A"
+],
   ],
   "s7": [
     [
@@ -354,6 +378,19 @@
       ],
       "A"
     ],
+    [
+  "Minería Subterránea",
+  "MS",
+  7,
+  5,
+  "PRO",
+  [
+    "GEOM-I",
+    "PYT",
+    "PEY"
+  ],
+  "A"
+],
     [
       "Procesos metalúrgicos",
       "PMET",
