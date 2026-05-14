@@ -44,10 +44,11 @@ button:hover{border-color:#93c5fd}
   font-size:18px;
   font-weight:700;
   color:#111827;
-}.small{font-size:12px;color:#475569}..yearbar{
+}.small{font-size:12px;color:#475569}.yearbar{
   display:grid;
   gap:16px;
-  margin-top:10px;
+  padding:14px 20px 0 20px;
+  background:#0f172a;
 }
 </style>
 </head>
@@ -65,10 +66,11 @@ button:hover{border-color:#93c5fd}
 <div class="progress" id="progress"></div>
 <div class="legend" id="legend"></div>
 </div>
-<div class="yearbar" id="yearbar"></div>
 <div class="small">Haz clic en un ramo para aprobarlo/tacharlo. También puedes aprobar semestres o años completos.</div>
 </div></header>
-<main class="wrap"><div id="grid" class="grid" style="--cols:8"><svg id="wires" class="svg-layer"></svg></div></main>
+<main class="wrap">
+  <div class="yearbar" id="yearbar"></div>
+  <div id="grid" class="grid" style="--cols:8"><svg id="wires" class="svg-layer"></svg></div></main>
 <footer class="wrap">Archivos esperados: <code>data_ICM.json</code> y <code>colors_ICM.json</code>.</footer>
 <script>
 const fallbackData={semesters:{s1:[["Cálculo I","CAL-I",1,6,"BAS",[],"A"],["Álgebra I","ALG-I",1,6,"BAS",[],"A"]],s2:[["Cálculo II","CAL-II",2,6,"BAS",["CAL-I"],"A"],["Álgebra II","ALG-II",2,6,"BAS",["ALG-I"],"A"]]},colors:{BAS:"#2E86C1",PRO:"#28B463",FG:"#AF7AC5",LAB:"#F5B041",ELE:"#7F8C8D"}};
