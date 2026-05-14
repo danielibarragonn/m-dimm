@@ -32,7 +32,11 @@ button:hover{border-color:#93c5fd}
   font-size:18px;
   font-weight:700;
   color:#111827;
-}.small{font-size:12px;color:#475569}.yearbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+}.small{font-size:12px;color:#475569}..yearbar{
+  display:grid;
+  gap:16px;
+  margin-top:10px;
+}
 </style>
 </head>
 <body>
@@ -86,14 +90,45 @@ function approveYear(y){
  saveApproved();renderGrid(globalData)
 }
 function buildYearButtons(data){
- const yb=document.getElementById("yearbar");yb.innerHTML="";
- const sems=Object.keys(data.semesters).map(s=>parseInt(s.slice(1))).filter(n=>!isNaN(n));
- const maxSem=Math.max(...sems);
- const maxYear=Math.ceil(maxSem/2);
- for(let y=1;y<=maxYear;y++){
-   const b=document.createElement("button");
-   b.textContent=`Aprobar Año ${y}`;
-   b.onclick=()=>approveYear(y);
+ const yb=document.getElementById("yearbar");
+ yb.innerHTML = "";
+
+ const sems = Object.keys(data.semesters)
+   .map(s => parseInt(s.slice(1)))
+   .filter(n => !isNaN(n));
+
+ const maxSem = Math.max(...sems);
+ const maxYear = Math.ceil(maxSem / 2);
+
+ yb.style.display = "grid";
+ yb.style.gridTemplateColumns = `repeat(${maxYear}, 1fr)`;
+ yb.style.gap = "16px";
+
+ for(let y = 1; y <= maxYear; y++){
+   const b = document.createElement("button");
+   b.textContent = `Año ${y}`;
+
+   b.onclick = () => {
+     const s1 = "s" + (y * 2 - 1);
+     const s2 = "s" + (y * 2);
+
+     const ramosAnio = [
+       ...(globalData.semesters[s1] || []),
+       ...(globalData.semesters[s2] || [])
+     ];
+
+     const completo = ramosAnio.every(r => approved.has(r[1]));
+
+     if(completo){
+       ramosAnio.forEach(r => approved.delete(r[1]));
+     }else{
+       ramosAnio.forEach(r => approved.add(r[1]));
+     }
+
+     saveApproved();
+     renderGrid(globalData);
+   };
+
    yb.appendChild(b);
  }
 }
