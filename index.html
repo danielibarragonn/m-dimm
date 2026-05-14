@@ -105,9 +105,23 @@ function renderGrid(data){
  grid.querySelectorAll(".col").forEach(n=>n.remove());
  for(const sk of sem){
   const col=document.createElement("div"); col.className="col";
-  col.innerHTML=`<h3>Semestre ${parseInt(sk.slice(1))}</h3><div class="sem-actions"><button>Aprobar</button><button>Desmarcar</button></div>`;
-  col.querySelectorAll("button")[0].onclick=()=>approveSemester(sk);
-  col.querySelectorAll("button")[1].onclick=()=>unapproveSemester(sk);
+col.innerHTML=`<h3>Semestre ${parseInt(sk.slice(1))}</h3><div class="sem-actions"><button class="sem-toggle">Semestre ${parseInt(sk.slice(1))}</button></div>`;
+
+const semBtn = col.querySelector(".sem-toggle");
+
+semBtn.onclick = () => {
+  const ramosSemestre = globalData.semesters[sk] || [];
+  const completo = ramosSemestre.every(r => approved.has(r[1]));
+
+  if (completo) {
+    ramosSemestre.forEach(r => approved.delete(r[1]));
+  } else {
+    ramosSemestre.forEach(r => approved.add(r[1]));
+  }
+
+  saveApproved();
+  renderGrid(globalData);
+};
   for(const row of data.semesters[sk]){
    const [nombre,sigla,nivel,sct,cat,pre]=row;
    const card=document.createElement("div"); card.className="card"; card.dataset.sigla=sigla; card.title=(pre&&pre.length)?`Prerrequisitos: ${pre.join(", ")}`:"Sin prerrequisitos";
