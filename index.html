@@ -115,12 +115,15 @@ function buildYearButtons(data){
  const maxYear = Math.ceil(maxSem / 2);
 
  yb.style.display = "grid";
- yb.style.gridTemplateColumns = `repeat(${maxYear}, 1fr)`;
+ yb.style.gridTemplateColumns = `repeat(${maxSem}, minmax(165px, 1fr))`;
  yb.style.gap = "16px";
 
  for(let y = 1; y <= maxYear; y++){
    const b = document.createElement("button");
    b.textContent = `Año ${y}`;
+
+   b.style.gridColumn = `${(y * 2) - 1} / span 2`;
+   b.style.width = "100%";
 
    b.onclick = () => {
      const s1 = "s" + (y * 2 - 1);
