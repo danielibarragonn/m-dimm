@@ -19,6 +19,11 @@ button:hover{border-color:#93c5fd}
 .sem-toggle{
   width:100%;
 }
+.sem-toggle.active{
+  background:#111827;
+  color:#ffffff;
+  border-color:#111827;
+}
 .card{background:#ffffff;color:#111827;border:1px solid #cbd5e1;border-radius:14px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer;transition:.15s}
 .card:hover{border-color:#93c5fd;transform:translateY(-1px)}
 .card.approved{opacity:.45;text-decoration:line-through;background:#e5e7eb; color:#111827}
@@ -54,7 +59,7 @@ button:hover{border-color:#93c5fd}
 </div>
 <div class="toolbar">
 <input id="q" type="search" placeholder="Buscar ramo o sigla…">
-<label class="pill"><input id="toggle-pr" type="checkbox" checked> Mostrar prerrequisitos</label>
+<label class="pill"><input id="toggle-pr" type="checkbox"> Mostrar prerrequisitos</label>
 <label class="pill"><input id="toggle-lock" type="checkbox" checked> Resaltar pendientes/bloqueados</label>
 <button id="reset">Limpiar avance</button>
 <div class="progress" id="progress"></div>
@@ -150,9 +155,14 @@ function renderGrid(data){
 col.innerHTML=`<div class="sem-actions"><button class="sem-toggle">Semestre ${parseInt(sk.slice(1))}</button></div>`;
 
 const semBtn = col.querySelector(".sem-toggle");
+const ramosSemestre = globalData.semesters[sk] || [];
+const completoSemestre = ramosSemestre.every(r => approved.has(r[1]));
+
+if (completoSemestre) {
+  semBtn.classList.add("active");
+}
 
 semBtn.onclick = () => {
-  const ramosSemestre = globalData.semesters[sk] || [];
   const completo = ramosSemestre.every(r => approved.has(r[1]));
 
   if (completo) {
