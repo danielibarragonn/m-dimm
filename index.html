@@ -47,20 +47,18 @@ button:hover{border-color:#93c5fd}
   color:#1d4ed8;
 }
 .category-dashboard{
-  display:flex;
-  flex-wrap:wrap;
-  gap:8px;
-  margin-top:6px;
-  font-size:12px;
-  color:#111827;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:12px;
+    margin:10px 0 14px;
 }
 
 .category-card{
-  border:1px solid #cbd5e1;
-  border-radius:10px;
-  padding:6px 8px;
-  background:#ffffff;
-  min-width:150px;
+    background:#fff;
+    border:1px solid #cbd5e1;
+    border-radius:12px;
+    padding:10px 12px;
+    box-shadow:0 1px 3px rgba(0,0,0,.08);
 }
 
 .category-title{
@@ -69,7 +67,8 @@ button:hover{border-color:#93c5fd}
 }
 
 .category-bar{
-  height:8px;
+  height:10px;
+  margin: 6px 0;
   background:#e5e7eb;
   border-radius:999px;
   overflow:hidden;
