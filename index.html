@@ -417,6 +417,9 @@ semBtn.onclick = () => {
    card.classList.toggle("approved",approved.has(sigla));
    card.classList.toggle("available",!approved.has(sigla)&&projected);
    card.classList.toggle("locked",lock.checked&&!approved.has(sigla)&&!projected);
+   if(row){
+   card.title = statusReason(row,data);
+}
   });
   updateProgress(data);draw();
  }
