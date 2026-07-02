@@ -133,6 +133,7 @@ button:hover{border-color:#93c5fd}
 <label class="pill"><input id="toggle-lock" type="checkbox" checked> Resaltar pendientes/bloqueados</label>
 <label class="pill"><input id="only-available" type="checkbox"> Solo disponibles</label>
 <button id="reset">Limpiar avance</button>
+<button id="export">Exportar avance</button>
 <div class="progress" id="progress"></div>
 <div class="legend" id="legend"></div>
 <div class="status-legend">
@@ -527,8 +528,55 @@ function draw(){
   draw();
 }
 q.oninput=filter; show.onchange=draw; lock.onchange=refreshStates; onlyAvailable.onchange=filter; window.onresize=draw; document.getElementById("reset").onclick=()=>{approved.clear();saveApproved();refreshStates();filter()};
+document.getElementById("export").onclick=()=>{exportProgress(data)};  
 refreshStates();filter();
 }
+ function exportProgress(data){
+  const rows = allRows(data);
+  const approvedRows = rows.filter(r => approved.has(r[1]));
+  const projectedRows = rows.filter(r => !approved.has(r[1]) && isProjected(r,data));
+
+  const totalSct = rows.reduce((a,r)=>a+(Number(r[3])||0),0);
+  const doneSct = approvedRows.reduce((a,r)=>a+(Number(r[3])||0),0);
+  const pctSct = totalSct ? ((doneSct/totalSct)*100).toFixed(1) : 0;
+  const pctRamos = rows.length ? ((approvedRows.length/rows.length)*100).toFixed(1) : 0;
+
+  const base = baseSemester(data);
+  const cycle = basicCycleComplete(data) ? "habilitado" : "bloqueado";
+
+  const txt = `Malla Interactiva Ingeniería Civil de Minas - DIMM UCN
+
+IMPORTANTE:
+Este reporte corresponde a una herramienta de apoyo no oficial.
+La información válida para inscripción, requisitos, avance curricular y excepciones corresponde siempre a la entregada por Jefatura de Carrera y/o los sistemas institucionales de la Universidad Católica del Norte.
+
+Resumen de avance:
+- Créditos aprobados: ${doneSct}/${totalSct} SCT (${pctSct}%)
+- Ramos aprobados: ${approvedRows.length}/${rows.length} (${pctRamos}%)
+- Semestre base estimado: ${base}
+- Proyección habilitada estimada: ${base}-${base+2}
+- Ciclo profesional: ${cycle}
+
+Ramos aprobados:
+${approvedRows.length ? approvedRows.map(r=>`- ${r[1]} | ${r[0]} | ${r[3]} SCT`).join("\n") : "- Sin ramos aprobados"}
+
+Ramos disponibles/proyectables:
+${projectedRows.length ? projectedRows.map(r=>`- ${r[1]} | ${r[0]} | Semestre ${r[2]} | ${r[3]} SCT`).join("\n") : "- Sin ramos disponibles"}
+
+Fecha de generación:
+${new Date().toLocaleString("es-CL")}
+`;
+
+  const blob = new Blob([txt], {type:"text/plain;charset=utf-8"});
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "avance_malla_icm_dimm_ucn.txt";
+  a.click();
+
+  URL.revokeObjectURL(url);
+} 
 (async()=>{const d=await getData();buildLegend(d.colors);renderGrid(d)})();
 </script>
 </body></html>
