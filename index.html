@@ -1103,33 +1103,17 @@ function toggleTheme(){
   localStorage.setItem("malla-theme", current === "dark" ? "light" : "dark");
   applyTheme();
 } 
-document.getElementById("modal-close").onclick = ()=>{
-  document.getElementById("detail-modal").classList.add("hidden");
-};
+document.addEventListener("click",(e)=>{
+  if(e.target.id === "modal-close"){
+    document.getElementById("detail-modal").classList.add("hidden");
+  }
 
-document.getElementById("detail-modal").onclick = (e)=>{
   if(e.target.id === "detail-modal"){
     document.getElementById("detail-modal").classList.add("hidden");
   }
-};  
+});
 (async()=>{
   applyTheme();
-
-  const closeBtn = document.getElementById("modal-close");
-  const modal = document.getElementById("detail-modal");
-
-  if(closeBtn && modal){
-    closeBtn.onclick = ()=>{
-      modal.classList.add("hidden");
-    };
-
-    modal.onclick = (e)=>{
-      if(e.target.id === "detail-modal"){
-        modal.classList.add("hidden");
-      }
-    };
-  }
-
   const d = await getData();
   buildLegend(d.colors);
   renderGrid(d);
@@ -1140,5 +1124,5 @@ document.getElementById("detail-modal").onclick = (e)=>{
     <button id="modal-close" class="modal-close">×</button>
     <div id="modal-content"></div>
   </div>
-</div>  
+</div> 
 </body></html>
