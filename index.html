@@ -136,6 +136,14 @@ function isProfessional(row){
 }
 
 function isProjected(row, data){
+  const sigla = row[1];
+
+  // Práctica Profesional: no se evalúa por dispersión,
+  // solo por sus requisitos/nivel definido en el JSON.
+  if(sigla === "PRACT"){
+    return isAvailable(row);
+  }
+
   const prereqOk = isAvailable(row);
   const windowOk = isInProjectionWindow(row, data);
   const cycleOk = !isProfessional(row) || basicCycleComplete(data);
