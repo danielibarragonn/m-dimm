@@ -206,30 +206,81 @@ function isProjected(row, data){
 
   return prereqOk && windowOk && cycleOk;
 }
-function statusReason(row, data){
+function statusReason(row,data){
+  const nombre = row[0];
   const sigla = row[1];
+  const semestre = row[2];
+  const sct = row[3];
+  const categoria = row[4];
+  const prereq = row[5] || [];
+
+  const prereqLines = prereq.length
+    ? prereq.map(p => `${approved.has(p) ? "✔" : "✖"} ${p}`).join("\n")
+    : "Sin prerrequisitos";
 
   if(approved.has(sigla)){
-    return "Asignatura aprobada.";
+    return `${nombre}
+
+Estado: ✔ Aprobada
+
+Sigla: ${sigla}
+Semestre: ${semestre}
+Créditos: ${sct} SCT
+Categoría: ${categoria}
+
+Prerrequisitos:
+${prereqLines}`;
   }
 
-  const prereq = row[5] || [];
+  if(isProjected(row,data)){
+    return `${nombre}
+
+Estado: ✔ Disponible para inscripción
+
+Sigla: ${sigla}
+Semestre: ${semestre}
+Créditos: ${sct} SCT
+Categoría: ${categoria}
+
+Prerrequisitos:
+${prereqLines}`;
+  }
+
   const missing = prereq.filter(p => !approved.has(p));
 
+  let motivos = [];
+
   if(missing.length > 0){
-    return `No disponible.\nFaltan prerrequisitos: ${missing.join(", ")}.`;
+    motivos.push("Faltan prerrequisitos: " + missing.join(", "));
   }
 
-  if(sigla !== "PRACT" && !isInProjectionWindow(row, data)){
+  if(sigla !== "PRACT" && !isInProjectionWindow(row,data)){
     const base = baseSemester(data);
-    return `No disponible.\nFuera de proyección académica.\nSemestre base: ${base}. Proyección habilitada: ${base}-${base+2}.`;
+    motivos.push(`Fuera de proyección académica. Proyección actual: ${base}-${base+2}`);
   }
 
   if(isProfessional(row) && !basicCycleComplete(data)){
-    return "No disponible.\nDebe completar el ciclo básico antes de inscribir asignaturas del ciclo profesional.";
+    motivos.push("Debe completar el ciclo básico para acceder al ciclo profesional");
   }
 
-  return "Disponible para inscripción.";
+  if(motivos.length === 0){
+    motivos.push("No cumple las condiciones de proyección");
+  }
+
+  return `${nombre}
+
+Estado: ✖ No disponible
+
+Sigla: ${sigla}
+Semestre: ${semestre}
+Créditos: ${sct} SCT
+Categoría: ${categoria}
+
+Motivo:
+- ${motivos.join("\n- ")}
+
+Prerrequisitos:
+${prereqLines}`;
 }
 
 function projectionText(data){
