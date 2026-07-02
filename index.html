@@ -410,6 +410,44 @@ function simulateApproval(sigla,data){
   const tempApproved = new Set(approved);
   tempApproved.add(sigla);
 
+  function tempIsAvailable(row){
+    return (row[5]||[]).every(p=>tempApproved.has(p));
+  }
+
+  function tempBaseSemester(){
+    const rows = allRows(data).filter(r => r[3] > 0 && r[1] !== "PRACT" && r[1] !== "CAPS");
+    const pending = rows.filter(r => !tempApproved.has(r[1]));
+    if(pending.length === 0) return 10;
+    return Math.min(...pending.map(r => semesterOf(r)));
+  }
+
+  function tempBasicCycleComplete(){
+    const basicRows = allRows(data).filter(r =>
+      semesterOf(r) <= 4 &&
+      r[3] > 0 &&
+      r[1] !== "PRACT" &&
+      r[1] !== "CAPS"
+    );
+    return basicRows.every(r => tempApproved.has(r[1]));
+  }
+
+  function tempIsProjected(row){
+    const sig = row[1];
+
+    if(sig === "PRACT"){
+      return tempIsAvailable(row);
+    }
+
+    const base = tempBaseSemester();
+    const sem = semesterOf(row);
+
+    const prereqOk = tempIsAvailable(row);
+    const windowOk = sem >= base && sem <= base + 2;
+    const cycleOk = !isProfessional(row) || tempBasicCycleComplete();
+
+    return prereqOk && windowOk && cycleOk;
+  }
+
   document.querySelectorAll(".card").forEach(card=>{
     const cardSigla = card.dataset.sigla;
     const row = allRows(data).find(r=>r[1]===cardSigla);
@@ -421,16 +459,14 @@ function simulateApproval(sigla,data){
       return;
     }
 
-    const prereq = row[5] || [];
     const availableNow = isProjected(row,data);
+    const availableWithSimulation = tempIsProjected(row);
 
-    const prereqOkWithSimulation = prereq.every(p=>tempApproved.has(p));
-
-    if(!availableNow && prereqOkWithSimulation){
+    if(!availableNow && availableWithSimulation){
       card.classList.add("newly-available");
     }
   });
-}  
+} 
 function renderGrid(data){
  globalData=data; buildYearButtons(data);
  const grid=document.getElementById("grid"),wires=document.getElementById("wires"),q=document.getElementById("q"),show=document.getElementById("toggle-pr"),lock=document.getElementById("toggle-lock"),onlyAvailable=document.getElementById("only-available");
