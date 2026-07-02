@@ -51,42 +51,54 @@ button:hover{border-color:#93c5fd}
 .legend{display:flex;gap:8px;flex-wrap:wrap}.sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
 .status-legend{
   display:flex;
-  gap:12px;
+  gap:14px;
   flex-wrap:wrap;
   align-items:center;
-  font-size:12px;
+  font-size:13px;
   color:#111827;
-  margin-top:4px;
+  margin-top:6px;
+  font-weight:600;
 }
 
 .status-legend span{
   display:flex;
   align-items:center;
-  gap:5px;
+  gap:6px;
 }
 
 .status-box{
-  width:14px;
+  width:22px;
   height:14px;
   border-radius:4px;
   display:inline-block;
-  border:1px solid #334155;
+  border:2px solid #334155;
 }
 
 .status-available{
   background:#ffffff;
-  border:2px solid #22c55e;
+  border:3px solid #22c55e;
 }
 
 .status-approved{
   background:#e5e7eb;
-  opacity:.6;
+  border:2px solid #6b7280;
   position:relative;
+}
+
+.status-approved::after{
+  content:"";
+  position:absolute;
+  left:2px;
+  right:2px;
+  top:6px;
+  height:2px;
+  background:#111827;
+  transform:rotate(-12deg);
 }
 
 .status-locked{
   background:#6b7280;
-  opacity:.6;
+  border:2px dashed #111827;
 }
 .pill{
   border:1px solid #cbd5e1;
