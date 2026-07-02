@@ -123,7 +123,7 @@ function isInProjectionWindow(row, data){
 
 function basicCycleComplete(data){
   const basicRows = allRows(data).filter(r =>
-    semesterOf(r) <= 5 &&
+    semesterOf(r) <= 4 &&
     r[3] > 0 &&
     r[1] !== "PRACT" &&
     r[1] !== "CAPS"
