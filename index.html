@@ -55,7 +55,19 @@ button:hover{border-color:#93c5fd}
   border:3px solid #f59e0b;
   background:#fff7ed;
 }
+.card.hover-source{
+    box-shadow:0 0 12px rgba(59,130,246,.8);
+}
 
+.card.prereq-ok{
+    border:3px solid #22c55e;
+    box-shadow:0 0 8px rgba(34,197,94,.5);
+}
+
+.card.prereq-missing{
+    border:3px solid #ef4444;
+    box-shadow:0 0 8px rgba(239,68,68,.5);
+}
 .card.newly-available{
     background:white;
     border:3px solid #2563eb;
@@ -487,6 +499,50 @@ function simulateApproval(sigla,data){
 }
   });
 } 
+function highlightPrereqs(sigla,data){
+
+    document.querySelectorAll(".card").forEach(c=>{
+        c.classList.remove(
+            "hover-source",
+            "prereq-ok",
+            "prereq-missing"
+        );
+    });
+
+    const row = allRows(data).find(r=>r[1]===sigla);
+
+    if(!row) return;
+
+    document.querySelector(`.card[data-sigla="${sigla}"]`)
+        ?.classList.add("hover-source");
+
+    (row[5]||[]).forEach(pre=>{
+
+        const card=document.querySelector(`.card[data-sigla="${pre}"]`);
+
+        if(!card) return;
+
+        if(approved.has(pre))
+            card.classList.add("prereq-ok");
+        else
+            card.classList.add("prereq-missing");
+
+    });
+
+}  
+function clearHighlight(){
+
+    document.querySelectorAll(".card").forEach(c=>{
+
+        c.classList.remove(
+            "hover-source",
+            "prereq-ok",
+            "prereq-missing"
+        );
+
+    });
+
+}  
 function renderGrid(data){
  globalData=data; buildYearButtons(data);
  const grid=document.getElementById("grid"),wires=document.getElementById("wires"),q=document.getElementById("q"),show=document.getElementById("toggle-pr"),lock=document.getElementById("toggle-lock"),onlyAvailable=document.getElementById("only-available");
@@ -524,11 +580,27 @@ semBtn.onclick = () => {
    card.dataset.sigla=sigla; 
    card.title=statusReason(row,data);
    card.innerHTML=`<div class="code">${sigla}</div><div class="name">${nombre}</div><span class="badge">${sct} SCT</span><span class="badge" style="background:${(data.colors[cat]||"#334155")}33;border-color:${data.colors[cat]||"#334155"}">${cat}</span>`;
-  card.addEventListener("click",(e)=>{
-    if(e.shiftKey){
-      simulateApproval(sigla,data);
-      return;
-    }
+card.addEventListener("click",(e)=>{
+  if(e.shiftKey){
+    simulateApproval(sigla,data);
+    return;
+  }
+
+  document.getElementById("simulation-info").textContent = "";
+
+  approved.has(sigla)?approved.delete(sigla):approved.add(sigla);
+  saveApproved();
+  refreshStates();
+  filter();
+});
+
+card.addEventListener("mouseenter",()=>{
+  highlightPrereqs(sigla,data);
+});
+
+card.addEventListener("mouseleave",()=>{
+  clearHighlight();
+});
     document.getElementById("simulation-info").textContent = "";
     approved.has(sigla)?approved.delete(sigla):approved.add(sigla);
     saveApproved();
