@@ -8,7 +8,7 @@ body{margin:0;font-family:system-ui,Segoe UI,Arial;background:#0f172a;color:#e5e
 header{
   position:sticky;
   top:0;
-  background:#0f172a;
+  background:#020817;
   color:#e5e7eb;
   border-bottom:1px solid #334155;
   padding:16px;
@@ -241,6 +241,38 @@ body.light-mode .card.locked{
 
 body.light-mode footer{
   color:#475569;
+} 
+body:not(.light-mode) button,
+body:not(.light-mode) .pill{
+  background:#111827;
+  color:#e5e7eb;
+  border-color:#334155;
+}
+
+body:not(.light-mode) button:hover{
+  background:#334155;
+}
+
+body:not(.light-mode) input{
+  background:#111827;
+  color:#e5e7eb;
+  border-color:#334155;
+}
+
+body:not(.light-mode) input::placeholder{
+  color:#94a3b8;
+}
+
+body:not(.light-mode) .year-toggle,
+body:not(.light-mode) .sem-toggle{
+  background:#e2e8f0;
+  color:#111827;
+}
+
+body.light-mode .card.available{
+  background:#ffffff;
+  border-color:#22c55e;
+  opacity:1;
 }  
 </style>
 </head>
@@ -947,10 +979,10 @@ ${new Date().toLocaleString("es-CL")}
 
   if(theme === "light"){
     document.body.classList.add("light-mode");
-    if(btn) btn.textContent = "Modo oscuro";
+    if(btn) btn.textContent = "🌙 Modo oscuro";
   }else{
     document.body.classList.remove("light-mode");
-    if(btn) btn.textContent = "Modo claro";
+    if(btn) btn.textContent = "☀️ Modo claro";
   }
 }
 
