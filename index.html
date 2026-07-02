@@ -254,6 +254,8 @@ function statusReason(row,data){
     ? unlocked.join("\n")
     : "Ninguna";
 
+  const impactText = unlockImpactText(sigla,data);
+
   if(approved.has(sigla)){
     return `${nombre}
 
@@ -268,7 +270,9 @@ Prerrequisitos:
 ${prereqLines}
 
 Desbloquea:
-${unlockedText}`;
+${unlockedText}
+
+${impactText}`;
   }
 
   if(isProjected(row,data)){
@@ -285,7 +289,9 @@ Prerrequisitos:
 ${prereqLines}
 
 Desbloquea:
-${unlockedText}`;
+${unlockedText}
+
+${impactText}`;
   }
 
   const missing = prereq.filter(p => !approved.has(p));
@@ -325,24 +331,45 @@ Prerrequisitos:
 ${prereqLines}
 
 Desbloquea:
-${unlockedText}`;
+${unlockedText}
+
+${impactText}`;
 }
+function unlockImpact(sigla,data){
+  const direct = unlocksCourses(sigla,data);
 
-function unlocksCourses(sigla,data){
-  const unlocked=[];
+  const directRows = direct
+    .map(item => item.split(" - ")[0])
+    .map(code => allRows(data).find(r => r[1] === code))
+    .filter(Boolean);
 
-  for(const sem of Object.keys(data.semesters)){
-    for(const row of data.semesters[sem]){
-      const prereq=row[5]||[];
+  const totalSct = directRows.reduce((sum,r)=>sum + (Number(r[3]) || 0), 0);
+  const count = directRows.length;
 
-      if(prereq.includes(sigla)){
-        unlocked.push(`${row[1]} - ${row[0]}`);
-      }
-    }
+  let level = "Bajo";
+
+  if(count >= 5){
+    level = "Alto";
+  }else if(count >= 3){
+    level = "Medio";
   }
 
-  return unlocked.sort();
+  return {
+    count,
+    totalSct,
+    level
+  };
 }
+
+function unlockImpactText(sigla,data){
+  const impact = unlockImpact(sigla,data);
+
+  return `Impacto en desbloqueo: ${impact.level}
+Asignaturas que abre directamente: ${impact.count}
+SCT asociados a esas asignaturas: ${impact.totalSct}
+
+Nota: este indicador solo señala cuántas asignaturas posteriores se habilitan directamente; no implica mayor importancia académica respecto de otros ramos.`;
+}  
 function projectionText(data){
   const base = baseSemester(data);
   const max = base + 2;
