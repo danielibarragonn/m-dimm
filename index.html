@@ -548,7 +548,7 @@ function unlockImpactText(sigla,data){
 Asignaturas que abre directamente: ${impact.count}
 SCT asociados a esas asignaturas: ${impact.totalSct}
 
-Nota: este indicador solo señala cuántas asignaturas posteriores se habilitan directamente; no implica mayor importancia académica respecto de otros ramos`;
+Nota: este indicador solo señala cuántas asignaturas posteriores se habilitan directamente; no implica mayor importancia académica respecto de otros ramos.`;
 }  
 function projectionText(data){
   const base = baseSemester(data);
@@ -906,7 +906,7 @@ col.appendChild(card);
    card.classList.toggle("available",!approved.has(sigla)&&projected);
    card.classList.toggle("locked",lock.checked&&!approved.has(sigla)&&!projected);
    if(row){
-   card.title = statusReason(row,data);
+   //card.title = statusReason(row,data);
 }
   });
   updateProgress(data);draw();
