@@ -105,6 +105,20 @@ button:hover{border-color:#93c5fd}
   border:3px solid #f59e0b;
   background:#fff7ed;
 }
+.prereq-line{
+  opacity:.35;
+  transition:.2s;
+}
+
+.prereq-line.active{
+  stroke:#fbbf24 !important;
+  stroke-width:5 !important;
+  opacity:1 !important;
+}
+
+.prereq-line.inactive{
+  opacity:.08 !important;
+}  
 .card.hover-source{
     transform:scale(1.03);
     box-shadow:0 0 16px rgba(255,255,255,.8);
@@ -771,6 +785,20 @@ function clearHighlight(){
     });
 
 }  
+function highlightPrereqLines(sigla){
+  document.querySelectorAll(".prereq-line").forEach(line=>{
+    const related = line.dataset.from === sigla || line.dataset.to === sigla;
+
+    line.classList.toggle("active", related);
+    line.classList.toggle("inactive", !related);
+  });
+}
+
+function clearPrereqLines(){
+  document.querySelectorAll(".prereq-line").forEach(line=>{
+    line.classList.remove("active","inactive");
+  });
+}  
 function renderGrid(data){
  globalData=data; buildYearButtons(data);
  const grid=document.getElementById("grid"),wires=document.getElementById("wires"),q=document.getElementById("q"),show=document.getElementById("toggle-pr"),lock=document.getElementById("toggle-lock"),onlyAvailable=document.getElementById("only-available");
@@ -822,12 +850,14 @@ semBtn.onclick = () => {
       filter();
 });
 
-  card.addEventListener("mouseenter",()=>{
-    highlightPrereqs(sigla,data);
+card.addEventListener("mouseenter",()=>{
+  highlightPrereqs(sigla,data);
+  highlightPrereqLines(sigla);
 });
 
-  card.addEventListener("mouseleave",()=>{
-    clearHighlight();
+card.addEventListener("mouseleave",()=>{
+  clearHighlight();
+  clearPrereqLines();
 });
 
 col.appendChild(card);
@@ -895,8 +925,13 @@ function draw(){
         path.setAttribute("d",`M ${x1} ${y1} C ${m} ${y1}, ${m} ${y2}, ${x2} ${y2}`);
         path.setAttribute("fill","none");
         path.setAttribute("stroke",data.colors[cat]||"#22d3ee");
-        path.setAttribute("stroke-width","1.5");
-        path.setAttribute("opacity",".35"); 
+        path.setAttribute("stroke-width","2");
+        path.setAttribute("opacity",".35");
+
+        path.classList.add("prereq-line");
+        path.dataset.from = p;
+        path.dataset.to = sigla;
+
         wires.appendChild(path);
       }
     }
