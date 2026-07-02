@@ -46,6 +46,46 @@ button:hover{border-color:#93c5fd}
   font-weight:700;
   color:#1d4ed8;
 }
+.category-dashboard{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-top:6px;
+  font-size:12px;
+  color:#111827;
+}
+
+.category-card{
+  border:1px solid #cbd5e1;
+  border-radius:10px;
+  padding:6px 8px;
+  background:#ffffff;
+  min-width:150px;
+}
+
+.category-title{
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+.category-bar{
+  height:8px;
+  background:#e5e7eb;
+  border-radius:999px;
+  overflow:hidden;
+}
+
+.category-fill{
+  height:100%;
+  background:#22c55e;
+  border-radius:999px;
+}
+
+.category-detail{
+  margin-top:4px;
+  font-size:11px;
+  color:#475569;
+}  
 .card{background:#ffffff;color:#111827;border:1px solid #cbd5e1;border-radius:14px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer;transition:.15s}
 .card:hover{border-color:#93c5fd;transform:translateY(-1px)}
 .card.approved{opacity:.45;text-decoration:line-through;background:#e5e7eb; color:#111827}
@@ -164,6 +204,7 @@ button:hover{border-color:#93c5fd}
 <button id="reset">Limpiar avance</button>
 <button id="export">Exportar avance</button>
 <div class="progress" id="progress"></div>
+<div class="progress" id="progress"></div>  
 <div class="legend" id="legend"></div>
 <div class="status-legend">
   <span><span class="status-box status-available"></span> Disponible / proyectable</span>
@@ -391,15 +432,68 @@ function projectionText(data){
   const cycle = basicCycleComplete(data) ? "Ciclo profesional habilitado" : "Ciclo profesional bloqueado";
   return `Semestre base: ${base} · Proyección: ${base}-${max} · ${cycle}`;
 }
-function updateProgress(data){
- const rows=allRows(data);
- const totalSct=rows.reduce((a,r)=>a+(Number(r[3])||0),0);
- const doneRows=rows.filter(r=>approved.has(r[1]));
- const doneSct=doneRows.reduce((a,r)=>a+(Number(r[3])||0),0);
- const pctSct=totalSct?((doneSct/totalSct)*100).toFixed(1):0;
- const pctRamos=rows.length?((doneRows.length/rows.length)*100).toFixed(1):0;
- document.getElementById("progress").textContent=`Créditos aprobados: ${doneSct}/${totalSct} SCT (${pctSct}%) · Ramos: ${doneRows.length}/${rows.length} (${pctRamos}%) · ${projectionText(data)}`;
+function updateCategoryDashboard(data){
+  const names = {
+    BAS: "Básica",
+    PRO: "Profesional",
+    FG: "Formación General",
+    LAB: "Práctica/Lab",
+    ELE: "Electivos"
+  };
+
+  const rows = allRows(data).filter(r => Number(r[3]) > 0);
+  const cats = [...new Set(rows.map(r => r[4]))];
+
+  const html = cats.map(cat=>{
+    const catRows = rows.filter(r => r[4] === cat);
+    const approvedRows = catRows.filter(r => approved.has(r[1]));
+
+    const totalSct = catRows.reduce((a,r)=>a+(Number(r[3])||0),0);
+    const doneSct = approvedRows.reduce((a,r)=>a+(Number(r[3])||0),0);
+
+    const pct = totalSct ? ((doneSct/totalSct)*100).toFixed(0) : 0;
+    const color = (globalData.colors && globalData.colors[cat]) ? globalData.colors[cat] : "#22c55e";
+    let estado = "⚪ Sin iniciar";
+
+    if(Number(pct) === 100){
+    estado = "✔ Completada";
+    }else if(Number(pct) > 0){
+      estado = "🟡 En progreso";
 }
+
+    return `
+      <div class="category-card">
+        <div class="category-title">${names[cat] || cat}</div>
+        <div class="category-bar">
+          <div class="category-fill" style="width:${pct}%;background:${color};"></div>
+        </div>
+        <div class="category-detail">
+            ${doneSct}/${totalSct} SCT · ${approvedRows.length}/${catRows.length} ramos · ${pct}%<br>
+            ${estado}
+      </div>
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("category-dashboard").innerHTML = html;
+}  
+function updateProgress(data){
+  const rows = allRows(data);
+
+  const totalSct = rows.reduce((a,r)=>a+(Number(r[3])||0),0);
+
+  const doneRows = rows.filter(r=>approved.has(r[1]));
+  const doneSct = doneRows.reduce((a,r)=>a+(Number(r[3])||0),0);
+
+  const pctSct = totalSct ? ((doneSct/totalSct)*100).toFixed(1) : 0;
+  const pctRamos = rows.length ? ((doneRows.length/rows.length)*100).toFixed(1) : 0;
+
+  document.getElementById("progress").textContent =
+    `Créditos aprobados: ${doneSct}/${totalSct} SCT (${pctSct}%) · Ramos: ${doneRows.length}/${rows.length} (${pctRamos}%) · ${projectionText(data)}`;
+
+  updateCategoryDashboard(data);
+}
+  
 function buildLegend(colors){
  const n={BAS:"Básica",PRO:"Profesional",FG:"Formación General",LAB:"Práctica/Lab",ELE:"Electivos"};
  const el=document.getElementById("legend");el.innerHTML="";
