@@ -237,6 +237,21 @@ function isProjected(row, data){
 
   return prereqOk && windowOk && cycleOk;
 }
+function unlocksCourses(sigla,data){
+  const unlocked=[];
+
+  for(const sem of Object.keys(data.semesters)){
+    for(const row of data.semesters[sem]){
+      const prereq=row[5]||[];
+
+      if(prereq.includes(sigla)){
+        unlocked.push(`${row[1]} - ${row[0]}`);
+      }
+    }
+  }
+
+  return unlocked.sort();
+}  
 function statusReason(row,data){
   const nombre = row[0];
   const sigla = row[1];
