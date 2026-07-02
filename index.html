@@ -311,49 +311,6 @@ body.light-mode .card.available{
   border-color:#22c55e;
   opacity:1;
 }  
-.modal.hidden{
-  display:none;
-}
-
-.modal{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.55);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-
-.modal-box{
-  background:#ffffff;
-  color:#111827;
-  width:min(560px,90vw);
-  max-height:80vh;
-  overflow:auto;
-  border-radius:14px;
-  padding:20px;
-  position:relative;
-  box-shadow:0 20px 50px rgba(0,0,0,.35);
-  white-space:pre-line;
-}
-
-.modal-close{
-  position:absolute;
-  top:10px;
-  right:10px;
-  width:32px;
-  height:32px;
-  border-radius:999px;
-  font-size:20px;
-  line-height:1;
-}
-
-body:not(.light-mode) .modal-box{
-  background:#111827;
-  color:#e5e7eb;
-  border:1px solid #334155;
-}  
 </style>
 </head>
 <body>
@@ -907,8 +864,7 @@ semBtn.onclick = () => {
 `;
    card.querySelector(".detail-btn").addEventListener("click",(e)=>{
       e.stopPropagation();
-      document.getElementById("modal-content").innerText = statusReason(row,data);
-      document.getElementById("detail-modal").classList.remove("hidden");
+      alert(statusReason(row,data));
 }); 
    card.addEventListener("click",(e)=>{
       if(e.shiftKey){
@@ -950,7 +906,7 @@ col.appendChild(card);
    card.classList.toggle("available",!approved.has(sigla)&&projected);
    card.classList.toggle("locked",lock.checked&&!approved.has(sigla)&&!projected);
    if(row){
-   //card.title = statusReason(row,data);
+   card.title = statusReason(row,data);
 }
   });
   updateProgress(data);draw();
@@ -1103,26 +1059,6 @@ function toggleTheme(){
   localStorage.setItem("malla-theme", current === "dark" ? "light" : "dark");
   applyTheme();
 } 
-document.addEventListener("click",(e)=>{
-  if(e.target.id === "modal-close"){
-    document.getElementById("detail-modal").classList.add("hidden");
-  }
-
-  if(e.target.id === "detail-modal"){
-    document.getElementById("detail-modal").classList.add("hidden");
-  }
-});
-(async()=>{
-  applyTheme();
-  const d = await getData();
-  buildLegend(d.colors);
-  renderGrid(d);
-})();
+(async()=>{applyTheme();const d=await getData();buildLegend(d.colors);renderGrid(d)})();
 </script>
-<div id="detail-modal" class="modal hidden">
-  <div class="modal-box">
-    <button id="modal-close" class="modal-close">×</button>
-    <div id="modal-content"></div>
-  </div>
-</div> 
 </body></html>
