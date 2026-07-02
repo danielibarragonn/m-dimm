@@ -81,7 +81,7 @@ button:hover{border-color:#93c5fd}
 
 .status-approved{
   background:#e5e7eb;
-  border:2px solid #6b7280;
+  border:3px solid #6b7280;
   position:relative;
 }
 
@@ -206,6 +206,31 @@ function isProjected(row, data){
 
   return prereqOk && windowOk && cycleOk;
 }
+function statusReason(row, data){
+  const sigla = row[1];
+
+  if(approved.has(sigla)){
+    return "Asignatura aprobada.";
+  }
+
+  const prereq = row[5] || [];
+  const missing = prereq.filter(p => !approved.has(p));
+
+  if(missing.length > 0){
+    return `No disponible.\nFaltan prerrequisitos: ${missing.join(", ")}.`;
+  }
+
+  if(sigla !== "PRACT" && !isInProjectionWindow(row, data)){
+    const base = baseSemester(data);
+    return `No disponible.\nFuera de proyección académica.\nSemestre base: ${base}. Proyección habilitada: ${base}-${base+2}.`;
+  }
+
+  if(isProfessional(row) && !basicCycleComplete(data)){
+    return "No disponible.\nDebe completar el ciclo básico antes de inscribir asignaturas del ciclo profesional.";
+  }
+
+  return "Disponible para inscripción.";
+}
 
 function projectionText(data){
   const base = baseSemester(data);
@@ -320,7 +345,10 @@ semBtn.onclick = () => {
 };
   for(const row of data.semesters[sk]){
    const [nombre,sigla,nivel,sct,cat,pre]=row;
-   const card=document.createElement("div"); card.className="card"; card.dataset.sigla=sigla; card.title=(pre&&pre.length)?`Prerrequisitos: ${pre.join(", ")}`:"Sin prerrequisitos";
+   const card=document.createElement("div"); 
+   card.className="card"; 
+   card.dataset.sigla=sigla; 
+   card.title=statusReason(row,data);
    card.innerHTML=`<div class="code">${sigla}</div><div class="name">${nombre}</div><span class="badge">${sct} SCT</span><span class="badge" style="background:${(data.colors[cat]||"#334155")}33;border-color:${data.colors[cat]||"#334155"}">${cat}</span>`;
    card.addEventListener("click",()=>{approved.has(sigla)?approved.delete(sigla):approved.add(sigla);saveApproved();refreshStates();filter()});
    col.appendChild(card);
