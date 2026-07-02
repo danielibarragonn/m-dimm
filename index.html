@@ -96,6 +96,26 @@ button:hover{border-color:#93c5fd}
   font-size:11px;
   color:#475569;
 }  
+.detail-btn{
+  display:block;
+  margin-top:8px;
+  padding:4px 7px;
+  font-size:11px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+body:not(.light-mode) .detail-btn{
+  background:#1e293b;
+  color:#e5e7eb;
+  border:1px solid #334155;
+}
+
+body.light-mode .detail-btn{
+  background:#f8fafc;
+  color:#111827;
+  border:1px solid #cbd5e1;
+}  
 .card{background:#ffffff;color:#111827;border:1px solid #cbd5e1;border-radius:14px;padding:12px;box-shadow:0 8px 20px rgba(0,0,0,.25);cursor:pointer;transition:.15s}
 .card:hover{border-color:#93c5fd;transform:translateY(-1px)}
 .card.approved{opacity:.45;text-decoration:line-through;background:#e5e7eb; color:#111827}
@@ -834,8 +854,18 @@ semBtn.onclick = () => {
    const card=document.createElement("div"); 
    card.className="card"; 
    card.dataset.sigla=sigla; 
-   card.title=statusReason(row,data);
-   card.innerHTML=`<div class="code">${sigla}</div><div class="name">${nombre}</div><span class="badge">${sct} SCT</span><span class="badge" style="background:${(data.colors[cat]||"#334155")}33;border-color:${data.colors[cat]||"#334155"}">${cat}</span>`;
+   //card.title=statusReason(row,data);
+   card.innerHTML=`
+    <div class="code">${sigla}</div>
+    <div class="name">${nombre}</div>
+    <span class="badge">${sct} SCT</span>
+    <span class="badge" style="background:${(data.colors[cat]||"#334155")}33;border-color:${data.colors[cat]||"#334155"}">${cat}</span>
+    <button class="detail-btn">ℹ Detalle</button>
+`;
+   card.querySelector(".detail-btn").addEventListener("click",(e)=>{
+      e.stopPropagation();
+      alert(statusReason(row,data));
+}); 
    card.addEventListener("click",(e)=>{
       if(e.shiftKey){
         simulateApproval(sigla,data);
