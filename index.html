@@ -190,6 +190,38 @@ button:hover{border-color:#93c5fd}
   background:#0f172a;
   min-width:max-content;
 }
+body.light-mode{
+  background:#f8fafc;
+  color:#111827;
+}
+
+body.light-mode header{
+  background:#ffffff;
+  color:#111827;
+}
+
+body.light-mode .scroll-area{
+  background:#f1f5f9;
+}
+
+body.light-mode .yearbar{
+  background:#f1f5f9;
+}
+
+body.light-mode .card{
+  background:#ffffff;
+  color:#111827;
+  box-shadow:0 4px 12px rgba(0,0,0,.12);
+}
+
+body.light-mode .card.locked{
+  background:#e5e7eb;
+  color:#111827;
+}
+
+body.light-mode footer{
+  color:#475569;
+}  
 </style>
 </head>
 <body>
@@ -205,6 +237,7 @@ button:hover{border-color:#93c5fd}
 <label class="pill"><input id="only-available" type="checkbox"> Solo disponibles</label>
 <button id="reset">Limpiar avance</button>
 <button id="export">Exportar avance</button>
+<button id="theme-toggle">Modo claro</button>  
 <div class="progress" id="progress"></div>
 <div class="category-dashboard" id="category-dashboard"></div> 
 <div class="legend" id="legend"></div>
@@ -839,6 +872,7 @@ function draw(){
 }
 q.oninput=filter; show.onchange=draw; lock.onchange=refreshStates; onlyAvailable.onchange=filter; window.onresize=draw; document.getElementById("reset").onclick=()=>{approved.clear();saveApproved();refreshStates();filter()};
 document.getElementById("export").onclick=()=>{exportProgress(data)};  
+document.getElementById("theme-toggle").onclick=toggleTheme;  
 refreshStates();filter();
 }
  function exportProgress(data){
@@ -887,6 +921,24 @@ ${new Date().toLocaleString("es-CL")}
 
   URL.revokeObjectURL(url);
 } 
-(async()=>{const d=await getData();buildLegend(d.colors);renderGrid(d)})();
+ function applyTheme(){
+  const theme = localStorage.getItem("malla-theme") || "dark";
+  const btn = document.getElementById("theme-toggle");
+
+  if(theme === "light"){
+    document.body.classList.add("light-mode");
+    if(btn) btn.textContent = "Modo oscuro";
+  }else{
+    document.body.classList.remove("light-mode");
+    if(btn) btn.textContent = "Modo claro";
+  }
+}
+
+function toggleTheme(){
+  const current = localStorage.getItem("malla-theme") || "dark";
+  localStorage.setItem("malla-theme", current === "dark" ? "light" : "dark");
+  applyTheme();
+} 
+(async()=>{applyTheme();const d=await getData();buildLegend(d.colors);renderGrid(d)})();
 </script>
 </body></html>
