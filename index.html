@@ -218,6 +218,11 @@ function statusReason(row,data){
     ? prereq.map(p => `${approved.has(p) ? "✔" : "✖"} ${p}`).join("\n")
     : "Sin prerrequisitos";
 
+  const unlocked = unlocksCourses(sigla,data);
+  const unlockedText = unlocked.length
+    ? unlocked.join("\n")
+    : "Ninguna";
+
   if(approved.has(sigla)){
     return `${nombre}
 
@@ -229,7 +234,10 @@ Créditos: ${sct} SCT
 Categoría: ${categoria}
 
 Prerrequisitos:
-${prereqLines}`;
+${prereqLines}
+
+Desbloquea:
+${unlockedText}`;
   }
 
   if(isProjected(row,data)){
@@ -243,7 +251,10 @@ Créditos: ${sct} SCT
 Categoría: ${categoria}
 
 Prerrequisitos:
-${prereqLines}`;
+${prereqLines}
+
+Desbloquea:
+${unlockedText}`;
   }
 
   const missing = prereq.filter(p => !approved.has(p));
@@ -280,9 +291,27 @@ Motivo:
 - ${motivos.join("\n- ")}
 
 Prerrequisitos:
-${prereqLines}`;
+${prereqLines}
+
+Desbloquea:
+${unlockedText}`;
 }
 
+function unlocksCourses(sigla,data){
+  const unlocked=[];
+
+  for(const sem of Object.keys(data.semesters)){
+    for(const row of data.semesters[sem]){
+      const prereq=row[5]||[];
+
+      if(prereq.includes(sigla)){
+        unlocked.push(`${row[1]} - ${row[0]}`);
+      }
+    }
+  }
+
+  return unlocked.sort();
+}
 function projectionText(data){
   const base = baseSemester(data);
   const max = base + 2;
