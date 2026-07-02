@@ -1112,7 +1112,28 @@ document.getElementById("detail-modal").onclick = (e)=>{
     document.getElementById("detail-modal").classList.add("hidden");
   }
 };  
-(async()=>{applyTheme();const d=await getData();buildLegend(d.colors);renderGrid(d)})();
+(async()=>{
+  applyTheme();
+
+  const closeBtn = document.getElementById("modal-close");
+  const modal = document.getElementById("detail-modal");
+
+  if(closeBtn && modal){
+    closeBtn.onclick = ()=>{
+      modal.classList.add("hidden");
+    };
+
+    modal.onclick = (e)=>{
+      if(e.target.id === "detail-modal"){
+        modal.classList.add("hidden");
+      }
+    };
+  }
+
+  const d = await getData();
+  buildLegend(d.colors);
+  renderGrid(d);
+})();
 </script>
 <div id="detail-modal" class="modal hidden">
   <div class="modal-box">
