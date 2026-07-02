@@ -226,18 +226,57 @@ semBtn.onclick = () => {
   });
   updateProgress(data);draw();
  }
- function draw(){
-  wires.innerHTML=""; if(!show.checked)return;
-  const gr=grid.getBoundingClientRect(); wires.setAttribute("width",gr.width);wires.setAttribute("height",gr.height);wires.setAttribute("viewBox",`0 0 ${gr.width} ${gr.height}`);
-  const pos=new Map(); document.querySelectorAll(".card").forEach(c=>{const r=c.getBoundingClientRect();pos.set(c.dataset.sigla,{x:r.left-gr.left,y:r.top-gr.top,w:r.width,h:r.height})});
-  for(const sk of sem){for(const row of data.semesters[sk]){
-   const [nombre,sigla,nivel,sct,cat,pre]=row,t=pos.get(sigla); if(!t||!pre)continue;
-   for(const p of pre){const s=pos.get(p); if(!s)continue; const x1=s.x+s.w,y1=s.y+s.h/2,x2=t.x,y2=t.y+t.h/2,m=(x1+x2)/2;
-    const path=document.createElementNS("http://www.w3.org/2000/svg","path"); path.setAttribute("d",`M ${x1} ${y1} C ${m} ${y1}, ${m} ${y2}, ${x2} ${y2}`);
-    path.setAttribute("fill","none");path.setAttribute("stroke",data.colors[cat]||"#22d3ee");path.setAttribute("stroke-width","2");path.setAttribute("opacity",".6"); wires.appendChild(path);
-   }
-  }}
- }
+function draw(){
+  wires.innerHTML=""; 
+  if(!show.checked)return;
+
+  const gr=grid.getBoundingClientRect(); 
+  wires.setAttribute("width",gr.width);
+  wires.setAttribute("height",gr.height);
+  wires.setAttribute("viewBox",`0 0 ${gr.width} ${gr.height}`);
+
+  const pos=new Map(); 
+  document.querySelectorAll(".card").forEach(c=>{
+    const r=c.getBoundingClientRect();
+    pos.set(c.dataset.sigla,{
+      x:r.left-gr.left,
+      y:r.top-gr.top,
+      w:r.width,
+      h:r.height
+    });
+  });
+
+  for(const sk of sem){
+    for(const row of data.semesters[sk]){
+      const [nombre,sigla,nivel,sct,cat,pre]=row,t=pos.get(sigla);
+
+      // Oculta visualmente las líneas hacia ramos de requisito global/nivel,
+      // pero mantiene sus prerrequisitos para bloqueo y disponibilidad.
+      if(sigla === "PRACT" || sigla === "CAPS") continue;
+
+      if(!t||!pre)continue;
+
+      for(const p of pre){
+        const s=pos.get(p); 
+        if(!s)continue; 
+
+        const x1=s.x+s.w,
+              y1=s.y+s.h/2,
+              x2=t.x,
+              y2=t.y+t.h/2,
+              m=(x1+x2)/2;
+
+        const path=document.createElementNS("http://www.w3.org/2000/svg","path"); 
+        path.setAttribute("d",`M ${x1} ${y1} C ${m} ${y1}, ${m} ${y2}, ${x2} ${y2}`);
+        path.setAttribute("fill","none");
+        path.setAttribute("stroke",data.colors[cat]||"#22d3ee");
+        path.setAttribute("stroke-width","2");
+        path.setAttribute("opacity",".6"); 
+        wires.appendChild(path);
+      }
+    }
+  }
+}
  function filter(){const term=q.value.toLowerCase().trim();document.querySelectorAll(".card").forEach(c=>{const m=c.dataset.sigla.toLowerCase().includes(term)||c.querySelector(".name").textContent.toLowerCase().includes(term);c.style.display=(!term||m)?"block":"none"});draw()}
  q.oninput=filter; show.onchange=draw; lock.onchange=refreshStates; window.onresize=draw; document.getElementById("reset").onclick=()=>{approved.clear();saveApproved();refreshStates();filter()};
  refreshStates();filter();
