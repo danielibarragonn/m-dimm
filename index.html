@@ -104,6 +104,51 @@ async function getData(){const d=await loadJSON("./data_ICM.json");const c=await
 function saveApproved(){localStorage.setItem(STORAGE_KEY,JSON.stringify([...approved]))}
 function allRows(data){return Object.values(data.semesters).flat()}
 function isAvailable(row){return (row[5]||[]).every(p=>approved.has(p))}
+function semesterOf(row){
+  return Number(row[2]) || 0;
+}
+
+function baseSemester(data){
+  const rows = allRows(data).filter(r => r[3] > 0 && r[1] !== "PRACT" && r[1] !== "CAPS");
+  const pending = rows.filter(r => !approved.has(r[1]));
+  if(pending.length === 0) return 10;
+  return Math.min(...pending.map(r => semesterOf(r)));
+}
+
+function isInProjectionWindow(row, data){
+  const sem = semesterOf(row);
+  const base = baseSemester(data);
+  return sem >= base && sem <= base + 2;
+}
+
+function basicCycleComplete(data){
+  const basicRows = allRows(data).filter(r =>
+    semesterOf(r) <= 5 &&
+    r[3] > 0 &&
+    r[1] !== "PRACT" &&
+    r[1] !== "CAPS"
+  );
+  return basicRows.every(r => approved.has(r[1]));
+}
+
+function isProfessional(row){
+  return row[4] === "PRO";
+}
+
+function isProjected(row, data){
+  const prereqOk = isAvailable(row);
+  const windowOk = isInProjectionWindow(row, data);
+  const cycleOk = !isProfessional(row) || basicCycleComplete(data);
+
+  return prereqOk && windowOk && cycleOk;
+}
+
+function projectionText(data){
+  const base = baseSemester(data);
+  const max = base + 2;
+  const cycle = basicCycleComplete(data) ? "Ciclo profesional habilitado" : "Ciclo profesional bloqueado";
+  return `Semestre base: ${base} · Proyección: ${base}-${max} · ${cycle}`;
+}
 function updateProgress(data){
  const rows=allRows(data);
  const totalSct=rows.reduce((a,r)=>a+(Number(r[3])||0),0);
@@ -111,7 +156,7 @@ function updateProgress(data){
  const doneSct=doneRows.reduce((a,r)=>a+(Number(r[3])||0),0);
  const pctSct=totalSct?((doneSct/totalSct)*100).toFixed(1):0;
  const pctRamos=rows.length?((doneRows.length/rows.length)*100).toFixed(1):0;
- document.getElementById("progress").textContent=`Créditos aprobados: ${doneSct}/${totalSct} SCT (${pctSct}%) · Ramos: ${doneRows.length}/${rows.length} (${pctRamos}%)`;
+ document.getElementById("progress").textContent=`Créditos aprobados: ${doneSct}/${totalSct} SCT (${pctSct}%) · Ramos: ${doneRows.length}/${rows.length} (${pctRamos}%) · ${projectionText(data)}`;
 }
 function buildLegend(colors){
  const n={BAS:"Básica",PRO:"Profesional",FG:"Formación General",LAB:"Práctica/Lab",ELE:"Electivos"};
@@ -220,10 +265,15 @@ semBtn.onclick = () => {
  }
  function refreshStates(){
   document.querySelectorAll(".card").forEach(card=>{
-   const sigla=card.dataset.sigla; const row=allRows(data).find(r=>r[1]===sigla); const available=row?isAvailable(row):true;
+   const sigla=card.dataset.sigla;
+   const row=allRows(data).find(r=>r[1]===sigla);
+
+   const available=row?isAvailable(row):true;
+   const projected=row?isProjected(row,data):true;
+
    card.classList.toggle("approved",approved.has(sigla));
-   card.classList.toggle("available",!approved.has(sigla)&&available);
-   card.classList.toggle("locked",lock.checked&&!approved.has(sigla)&&!available);
+   card.classList.toggle("available",!approved.has(sigla)&&projected);
+   card.classList.toggle("locked",lock.checked&&!approved.has(sigla)&&!projected);
   });
   updateProgress(data);draw();
  }
@@ -290,11 +340,11 @@ function draw(){
       sigla.toLowerCase().includes(term) ||
       c.querySelector(".name").textContent.toLowerCase().includes(term);
 
-    const available=row?isAvailable(row):true;
+    const projected=row?isProjected(row,data):true;
     const isApproved=approved.has(sigla);
 
     const matchAvailableMode=
-      !onlyAvailable.checked || (!isApproved && available);
+      !onlyAvailable.checked || (!isApproved && projected);;
 
     c.style.display=(matchSearch && matchAvailableMode)?"block":"none";
   });
